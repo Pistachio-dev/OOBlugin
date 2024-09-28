@@ -13,11 +13,14 @@ using Dalamud.Game;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using ImGuiNET;
+using Dalamud.IoC;
 
 namespace OOBlugin
 {
     public class OOBlugin : IDalamudPlugin
     {
+        [PluginService] public static IPluginLog Log { get; private set; } = null!;
+
         public string Name => "OOBlugin";
         public static OOBlugin Plugin { get; private set; }
         //public static Configuration Config { get; private set; }
@@ -37,7 +40,7 @@ namespace OOBlugin
         private static Dictionary<uint, string> usables;
         private static float walkTime = 0;
 
-        public OOBlugin(DalamudPluginInterface pluginInterface)
+        public OOBlugin(IDalamudPluginInterface pluginInterface)
         {
             Plugin = this;
             DalamudApi.Initialize(this, pluginInterface);

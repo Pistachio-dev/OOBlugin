@@ -94,7 +94,7 @@ namespace OOBlugin
 
             try
             {
-                var agentModule = Framework.Instance()->GetUiModule()->GetAgentModule();
+                var agentModule = Framework.Instance()->GetUIModule()->GetAgentModule();
 
                 try
                 {

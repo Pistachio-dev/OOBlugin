@@ -19,7 +19,7 @@ namespace Dalamud
     {
         [PluginService]
         //[RequiredVersion("1.0")]
-        public static DalamudPluginInterface PluginInterface { get; private set; }
+        public static IDalamudPluginInterface PluginInterface { get; private set; }
 
         [PluginService]
         //[RequiredVersion("1.0")]
@@ -51,11 +51,11 @@ namespace Dalamud
 
         public DalamudApi(IDalamudPlugin plugin) => pluginCommandManager ??= new(plugin);
 
-        public DalamudApi(IDalamudPlugin plugin, DalamudPluginInterface pluginInterface)
+        public DalamudApi(IDalamudPlugin plugin, IDalamudPluginInterface pluginInterface)
         {
             if (!pluginInterface.Inject(this))
             {
-                PluginLog.LogError("Failed loading DalamudApi!");
+                OOBlugin.OOBlugin.Log.Error("Failed loading DalamudApi!");
                 return;
             }
 
@@ -74,7 +74,7 @@ namespace Dalamud
             throw new InvalidOperationException();
         }
 
-        public static void Initialize(IDalamudPlugin plugin, DalamudPluginInterface pluginInterface) => _ = new DalamudApi(plugin, pluginInterface);
+        public static void Initialize(IDalamudPlugin plugin, IDalamudPluginInterface pluginInterface) => _ = new DalamudApi(plugin, pluginInterface);
 
         public static void Dispose() => pluginCommandManager?.Dispose();
     }
@@ -110,7 +110,7 @@ namespace Dalamud
 
         private IEnumerable<(string, CommandInfo)> GetCommandInfoTuple(MethodInfo method)
         {
-            var handlerDelegate = (CommandInfo.HandlerDelegate)Delegate.CreateDelegate(typeof(CommandInfo.HandlerDelegate), plugin, method);
+            var handlerDelegate = (IReadOnlyCommandInfo.HandlerDelegate)Delegate.CreateDelegate(typeof(IReadOnlyCommandInfo.HandlerDelegate), plugin, method);
 
             var command = handlerDelegate.Method.GetCustomAttribute<CommandAttribute>();
             var aliases = handlerDelegate.Method.GetCustomAttribute<AliasesAttribute>();
